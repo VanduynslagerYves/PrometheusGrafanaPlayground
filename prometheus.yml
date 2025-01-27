@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  # Scrape Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']
+
+  # Scrape Node Exporters
+  - job_name: 'node_exporters'
+    static_configs:
+      - targets:
+          - 'node_exporter_client_1:9100'
+          - 'node_exporter_client_2:9100'
+          - 'node_exporter_client_3:9100'

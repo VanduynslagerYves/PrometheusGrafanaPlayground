@@ -1,0 +1,56 @@
+version: '3.7'
+
+services:
+  # Prometheus service
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    depends_on:
+      - grafana
+
+  # Grafana service
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    restart: unless-stopped
+
+  # Node Exporter Clients
+  node_exporter_client_1:
+    image: prom/node-exporter:latest
+    container_name: node_exporter_client_1
+    ports:
+      - "9101:9100"
+    restart: unless-stopped
+
+  node_exporter_client_2:
+    image: prom/node-exporter:latest
+    container_name: node_exporter_client_2
+    ports:
+      - "9102:9100"
+    restart: unless-stopped
+
+  node_exporter_client_3:
+    image: prom/node-exporter:latest
+    container_name: node_exporter_client_3
+    ports:
+      - "9103:9100"
+    restart: unless-stopped
+
+  # Add more Node Exporter clients here...
+
+volumes:
+  prometheus_data:
+  grafana_data:
