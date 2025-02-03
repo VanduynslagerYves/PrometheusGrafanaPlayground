@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  # Prometheus service
+  # Prometheus service (for metrics)
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -26,8 +26,32 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
     restart: unless-stopped
+    
+  # Loki service (for logs)
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    volumes:
+      - ./loki-config.yml:/etc/loki/local-config.yml
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yml
+    restart: unless-stopped
 
-  # Node Exporter Clients
+  # Tempo service (for traces: OpenTelemetry)
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo
+    volumes:
+      - ./tempo-config.yml:/etc/tempo/tempo-config.yml
+    ports:
+      - "3200:3200"  # Tempo's HTTP API
+      - "4317:4317"  # OTLP gRPC
+      - "4318:4318"  # OTLP HTTP
+    command: [ "-config.file=/etc/tempo/tempo-config.yml" ]
+    restart: unless-stopped
+
+  # Example prometheus node exporter clients
   node_exporter_client_1:
     image: prom/node-exporter:latest
     container_name: node_exporter_client_1

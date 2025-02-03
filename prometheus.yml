@@ -7,7 +7,7 @@ scrape_configs:
     static_configs:
       - targets: ['prometheus:9090']
 
-  # Scrape Node Exporters
+  # Scrape Node Exporters (there's an autodiscover feature through dns/dhcp)
   - job_name: 'node_exporters'
     static_configs:
       - targets:
